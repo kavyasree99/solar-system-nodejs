@@ -1,0 +1,57 @@
+name: Testing nodeJS
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+            - feature/*
+jobs:
+    Unit-Testing:
+        name: Unit Testing
+        runs-on: ubuntu-latest
+        steps:
+            - name: check the code
+              uses: actions/checkout@v4
+            
+            - name: set up NodeJs
+              uses: setup/node@v3
+              with:
+                node-version: 18
+
+            - name: install dependencies    
+              run: npm install
+
+            - name: unit testing
+              run: npm test
+
+            - name: Archive test results
+              uses: actions/upload-artifact@v3 # used to save the test results file in the repo
+              with:
+                name: mocha-test-results
+                path: test-results.xml
+
+    Code-coverage:
+      name: Code Coverage
+      runs-on: ubuntu-latest
+      steps:
+        - name: check the code
+          uses: actions/checkout@v4
+            
+        - name: set up NodeJs
+          uses: setup/node@v3
+          with:
+            node-version: 18
+
+        - name: install dependencies    
+          run: npm install
+
+        - name: code coverage
+          continue-on-error: true
+          run: npm run coverage
+
+        - name: Archive test results
+          uses: actions/upload-artifact@v3 # used to save the test results file in the repo
+          with:
+            name: code-coverage-result
+            path: coverage
+            rention-days: 5
