@@ -25,6 +25,9 @@ jobs:
               with:
                 node-version: 18
 
+            - name: updating package.json
+              run: npm install mongoose@latest express@latest mocha-junit-reporter@latest
+
             - name: install dependencies    
               run: npm install
 
