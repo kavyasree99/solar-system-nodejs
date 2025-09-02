@@ -5,6 +5,13 @@ on:
         branches:
             - main
             - feature/*
+
+env:
+  MONGO_URI: mongodb+srv://kavya_db_user:kavya_db_user@cluster0.l4vp5oy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+  MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+
+
 jobs:
     Unit-Testing:
         name: Unit Testing
