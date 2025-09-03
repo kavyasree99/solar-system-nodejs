@@ -15,7 +15,15 @@ env:
 jobs:
     Unit-Testing:
         name: Unit Testing
-        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            nodejs-version: [18,19]
+            os: [ubuntu-latest,macos-latest]
+            exclude:
+              - nodejs-version: 18
+                os: macos-latest
+
+        runs-on: ${{ matrix.os}}
         steps:
             - name: check the code
               uses: actions/checkout@v4
@@ -23,7 +31,7 @@ jobs:
             - name: set up NodeJs
               uses: actions/setup-node@v4
               with:
-                node-version: 18
+                node-version: ${{ matrix.os }}
 
             - name: updating package.json
               run: npm install mongoose@latest express@latest mocha-junit-reporter@latest
@@ -32,9 +40,11 @@ jobs:
               run: npm install
 
             - name: unit testing
+              id: nodejs-unit-test
               run: npm test
 
             - name: Archive test results
+              if: steps.nodejs-unit-test.outcome == 'FAILURES' || steps.nodejs-unit-test.outcome == 'SUCcESS'
               uses: actions/upload-artifact@v4 # used to save the test results file in the repo
               with:
                 name: mocha-test-results
