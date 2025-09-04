@@ -109,13 +109,13 @@ jobs:
             docker images
             docker run \
               -p 3000:3000 \
-              -e MONGO_URI=$MONGO_URI \
-              -e MONGO_USER=$MONGO_USER \
-              -e MONGO_PASS=$MONGO_PASS \
+              -e MONGO_URI=${{ env.MONGO_URI }} \
+              -e MONGO_USER=${{ env.MONGO_USERNAME }} \
+              -e MONGO_PASS=${{ env.MONGO_PASSWORD }} \
               -e EMV_DOCKERHUB_USERNAME=${{ vars.DOCKER_USERNAME }} \
               ${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}
 
-            export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q --filter ancestor=${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}))
+            export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q --filter ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}))
             echo "Container IP: $IP"
 
             wget -qO- 127.0.0.1:3000/live | grep live
