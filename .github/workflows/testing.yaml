@@ -81,8 +81,8 @@ jobs:
             name: code-coverage-result
             path: coverage
             rention-days: 5
-
-     docker:
+    
+    docker:
       name: containerzation
       needs: [ Code-coverage ]
       runs-on: ubuntu-latest
