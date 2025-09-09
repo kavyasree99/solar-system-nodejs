@@ -82,11 +82,11 @@ jobs:
             path: coverage
             rention-days: 5
 
-    docker:
+     docker:
       name: containerzation
-      needs: [ Code-coverage]
+      needs: [ Code-coverage ]
       runs-on: ubuntu-latest
-      
+
       steps:
         - name: checkout repo
           uses: actions/checkout@v4
@@ -112,9 +112,8 @@ jobs:
             docker ps -q --filter "ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}" | xargs -r docker stop
             docker ps -aq --filter "ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}" | xargs -r docker rm
 
-           
-            docker run -d \
-              -p 3000:3000 \
+            
+            docker run -d -p 3000:3000 \
               -e MONGO_URI=${{ env.MONGO_URI }} \
               -e MONGO_USER=${{ env.MONGO_USERNAME }} \
               -e MONGO_PASS=${{ env.MONGO_PASSWORD }} \
@@ -124,3 +123,4 @@ jobs:
             
             sleep 5
             wget -qO- 127.0.0.1:3000/live | grep live
+
