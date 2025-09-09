@@ -107,15 +107,20 @@ jobs:
         - name: Docker Image Testing
           run: |
             docker images
-            docker run \
+
+            
+            docker ps -q --filter "ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}" | xargs -r docker stop
+            docker ps -aq --filter "ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}" | xargs -r docker rm
+
+           
+            docker run -d \
               -p 3000:3000 \
               -e MONGO_URI=${{ env.MONGO_URI }} \
               -e MONGO_USER=${{ env.MONGO_USERNAME }} \
               -e MONGO_PASS=${{ env.MONGO_PASSWORD }} \
-              -e EMV_DOCKERHUB_USERNAME=${{ vars.DOCKER_USERNAME }} \
+              -e DOCKERHUB_USERNAME=${{ vars.DOCKER_USERNAME }} \
               ${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}
 
-            export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q --filter ancestor=${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha }}))
-            echo "Container IP: $IP"
-
+            
+            sleep 5
             wget -qO- 127.0.0.1:3000/live | grep live
